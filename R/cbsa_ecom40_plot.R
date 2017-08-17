@@ -23,38 +23,28 @@ cbp_co_2015_ecom_df <- cbp_co_2015_df %>%
                          mutate(id = paste(FIPSTATE,FIPSCTY, sep=''))
 
 # Population estimates for each core base statistical area
-pop_est_2010to16_file <- '../data/census/PEP_2016_GCTPEPANNR.US23PR/PEP_2016_GCTPEPANNR.US23PR_with_ann.csv'
+pop_est_2010to16_file <- '../data/census/cbsa-est2016-alldata.csv'
 pop_est_2015_df <- fread(pop_est_2010to16_file,
-                         colClasses=c( "character",
-                                       "character",
-                                       "character",
-                                       "character",
-                                       "character",
-                                       "character",
-                                       "character",
-                                       "integer",
-                                       "integer",
-                                       "integer",
-                                       "integer",
-                                       "integer",
-                                       "integer",
-                                       "integer",
-                                       "integer",
-                                       "integer"),
-                         select=c("GC.target-geo-id2","respop72015")) %>%
-                         mutate( id=`GC.target-geo-id2`,
-                                 respop72015)
+                         select=c("CBSA",
+                                  "STCOU",
+                                  "POPESTIMATE2015",
+                                  "RESIDUAL2015"),
+           			         colClasses=c(CBSA="character",
+				                              STCOU="character",
+                                      POPESTIMATE2015="numeric",
+				                              RESIDUAL2015="numeric"),
+                         stringsAsFactors = FALSE)
 
 cities_df <- fread('../data/cities.csv')
 
 ## Load a spatial dataframe of US counties from a US census 500k shapefile
 ## Convert it to a regular dataframe and use the GEOID
 ## Do this outside of the loop one time.
-county_map_sdf <- readOGR(dsn = "../data/shapefiles/cb_2015_us_county_500k",
-                          layer = "cb_2015_us_county_500k")
+county_map_sdf <- readOGR(dsn = "../data/shapefiles/cb_2015_us_county_20m",
+                          layer = "cb_2015_us_county_20m")
 
-state_map_sdf <- readOGR(dsn = "../data/shapefiles/cb_2015_us_state_500k",
-                          layer = "cb_2015_us_state_500k")
+state_map_sdf <- readOGR(dsn = "../data/shapefiles/cb_2015_us_state_20m",
+                          layer = "cb_2015_us_state_20m")
 cbsa_map_sdf <-readOGR(dsn = "../data/shapefiles/cb_2015_us_cbsa_20m",
                     layer = "cb_2015_us_cbsa_20m")
 
@@ -109,17 +99,21 @@ mod40 <- function (x) {
 }
 
 # Determine num of rows needed for target dataframe
-#df <- county_centroids_2015_ecom_df %>%
-#      select(id, emp, long, lat)
+df <- county_centroids_2015_ecom_df %>%
+      select(id, EMP, county_longs, county_lats) %>%
+      mutate(id,
+             emp=EMP,
+             long=county_longs,
+             lat=county_lats)
 
 markers <- vector("integer", nrow(df))
-for ( i in seq_along(df)) {
+for ( i in 1:nrow(df)) {
    markers[i] <- mod40(df[i,]$emp)
 }
 num_rows <- sum(markers)
 
 # pre allocate memory for target dataframe
-emp40_df <- data.frame(county = character(num_rows),
+emp40_df <- data.frame(id = character(num_rows),
                        long = numeric(num_rows),
                        lat = numeric(num_rows),
                        emp40 = numeric(num_rows),
@@ -130,10 +124,10 @@ emp40_df <- data.frame(county = character(num_rows),
 # create target dataframe observations/rows of 40 employees
 # whose sum approaches the total number of employees df[i,]$EMP
 index <- 1
-for ( i in seq_along(df)) {
+for ( i in 1:nrow(df)) {
         for ( j in 1:markers[i]) {
                 row_index <- index - 1 + j
-                emp40_df[row_index,]$county <- df[i,]$county
+                emp40_df[row_index,]$id <- df[i,]$id
                 emp40_df[row_index,]$long <- df[i,]$long
                 emp40_df[row_index,]$lat <- df[i,]$lat
                 emp40_df[row_index,]$emp40 <- 40
@@ -162,13 +156,14 @@ theme_minimal <- theme(axis.line=element_blank(),
 theme_update(plot.title = element_text(hjust = 0.5))
 
 cbsa_map_pop_df <- left_join(cbsa_map_df,
-                             pop_est_2015_df)
+                             pop_est_2015_df,
+                             by=c("id","CBSA"))
 
 cbsa_map_large_df <- cbsa_map_pop_df %>%
-                     filter(respop72015 > 999999)
+                     filter(POPESTIMATE2015 > 999999)
 
 cbsa_map_medium_df <- cbsa_map_pop_df %>%
-                      filter(respop72015 > 250000 & respop72015 < 1000000)
+                      filter(POPESTIMATE2015 > 250000 & respop72015 < 1000000)
 
 cities_df <- fread('../data/cities.csv')
 
