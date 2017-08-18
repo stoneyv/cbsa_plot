@@ -29,10 +29,10 @@ pop_est_2015_df <- fread(pop_est_2010to16_file,
                                   "STCOU",
                                   "POPESTIMATE2015",
                                   "RESIDUAL2015"),
-           			         colClasses=c(CBSA="character",
-				                              STCOU="character",
+                         colClasses=c(CBSA="character",
+                                      STCOU="character",
                                       POPESTIMATE2015="numeric",
-				                              RESIDUAL2015="numeric"),
+				      RESIDUAL2015="numeric"),
                          stringsAsFactors = FALSE)
 
 cities_df <- fread('../data/cities.csv')
@@ -157,13 +157,13 @@ theme_update(plot.title = element_text(hjust = 0.5))
 
 cbsa_map_pop_df <- left_join(cbsa_map_df,
                              pop_est_2015_df,
-                             by=c("id","CBSA"))
+                             by=c("id"="CBSA"))
 
 cbsa_map_large_df <- cbsa_map_pop_df %>%
                      filter(POPESTIMATE2015 > 999999)
 
 cbsa_map_medium_df <- cbsa_map_pop_df %>%
-                      filter(POPESTIMATE2015 > 250000 & respop72015 < 1000000)
+                      filter(POPESTIMATE2015 > 250000 & POPESTIMATE2015 < 1000000)
 
 cities_df <- fread('../data/cities.csv')
 
@@ -182,11 +182,12 @@ ggplot(state_map_df) +
                           size = 0.10,
                           alpha = 0.9) +
            geom_point(data=emp40_df, # 40 ecommerce employees fill
-                      aes(x=county_longs, y=county_lats,
-                          size=40),
+                      aes(x=long, y=lat),
+                      position="jitter",
                       shape = 21,
                       fill = "#FCBD62",
                       color = "white",
+                      size = 2,
                       stroke = 0.5,
                       alpha = 1) +
            geom_point(data=cities_df,  # City points for highlighted MSA
