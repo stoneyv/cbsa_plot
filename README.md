@@ -9,11 +9,10 @@ cbp15co.txt
 https://www2.census.gov/programs-surveys/popest/datasets/2010-2016/  
 https://www2.census.gov/programs-surveys/popest/datasets/2010-2016/metro/totals/  
 cbsa-est2016.csv
-PEP_2016_GCTPEPANNR.US23PR  
   
 3. Download the following cartographic boundary shapefiles from the Census Bureau into ./data/shapefiles  
 https://www.census.gov/geo/maps-data/data/tiger-cart-boundary.html  
-a. cb_2015_us_county_500k  
-b. cb_2015_us_state_500k  
+a. cb_2015_us_county_20m  
+b. cb_2015_us_state_20m  
 c. cb_2015_us_cbsa_20m  
 
