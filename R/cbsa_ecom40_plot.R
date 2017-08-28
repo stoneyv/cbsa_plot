@@ -183,7 +183,7 @@ ggplot(state_map_df) +
                           alpha = 0.9) +
            geom_point(data=emp40_df, # 40 ecommerce employees fill
                       aes(x=long, y=lat),
-                      position="jitter",
+                      position=position_jitter(width=0.6,height=0.6),
                       shape = 21,
                       fill = "#FCBD62",
                       color = "white",
@@ -204,6 +204,6 @@ ggplot(state_map_df) +
                      nudge_y = cities_df$ny,
                      size = 3) +
            theme_minimal +
-           coord_map("polyconic") 
+           coord_map("albers", lat0=30, lat1=40) 
 
 
