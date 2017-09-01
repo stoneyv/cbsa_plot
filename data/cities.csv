@@ -1,4 +1,4 @@
-city_name, long, lat, nx, ny
+name,lon,lat,nx,ny
 "Seattle", -122.3321, 47.60621, -1.5, 0.0
 "Portland", -122.6765, 45.52306, -1.5, 0.0
 "Boise", -116.2146, 43.61871, 1.2, -0.5
