@@ -1,5 +1,9 @@
 ## cbsa_plot
 ### Recreation of the Times ecommerce employment visualizations
+
+```
+git clone https://github.com/stoneyv/cbsa_plot.git
+```
   
 1. Download the following Census Bureau .txt file into ./data/census/CBP/  
 https://www.census.gov/programs-surveys/cbp/data/datasets.html  
@@ -15,4 +19,6 @@ https://www.census.gov/geo/maps-data/data/tiger-cart-boundary.html
 a. cb_2015_us_county_20m  
 b. cb_2015_us_state_20m  
 c. cb_2015_us_cbsa_20m  
+
+<img src="images/ecommerce_2015_by_county_840x533.png"/>
 
