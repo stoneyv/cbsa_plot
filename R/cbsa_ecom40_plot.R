@@ -167,43 +167,59 @@ cbsa_map_medium_df <- cbsa_map_pop_df %>%
 
 cities_df <- fread('../data/cities.csv')
 
-ggplot(state_map_df) +
-           geom_polygon(aes(x=long, y=lat, group=group), # State map
-                            color="white",
-                            size = 0.20,
-                            fill="#EBEBEB") +
-           annotation_map(cbsa_map_large_df, # MSA w/ Population >= 1M 
-                          fill="#9AB7D6",
-                          color = "NA",
-                          alpha = 0.9) +
-           annotation_map(cbsa_map_medium_df, # MSA w/ Population 250k to 1M
-                          fill="#CFDBEB",
-                          color = "NA",
-                          size = 0.10,
-                          alpha = 0.9) +
-           geom_point(data=emp40_df, # 40 ecommerce employees fill
-                      aes(x=long, y=lat),
-                      position=position_jitter(width=0.6,height=0.6),
-                      shape = 21,
-                      fill = "#FCBD62",
-                      color = "white",
-                      size = 2,
-                      stroke = 0.5,
-                      alpha = 1) +
-           geom_point(data=cities_df,  # City points for highlighted MSA
-                      aes(x=lon, y=lat),
-                      shape = 21,
-                      fill = "black",
-                      color = "white",
-                      size = 2,
-                      stroke = 1) +
-           geom_text(data=cities_df,  # City names for highlighted MSA
-                     aes(x=lon, y=lat, label=name,
-                         family="Helvetica-Narrow", fontface="plain"),
-                     nudge_x = cities_df$nx,
-                     nudge_y = cities_df$ny,
-                     size = 3) +
-           theme_minimal +
-           coord_map("albers", lat0=30, lat1=40) 
+# State boundaries of the continental US
+state_layer <- ggplot(state_map_df) +
+                 geom_polygon(aes(x=long, y=lat, group=group), # State map
+                              color="white",
+                              size = 0.20,
+                              fill="#EBEBEB") 
+
+# MSA w/ Population >= 1M 
+cbsa_large_layer <- annotation_map(cbsa_map_large_df, 
+                                   fill="#9AB7D6",
+                                   color = "NA",
+                                   alpha = 0.9)
+
+# MSA w/ Population 250k to 1M
+cbsa_medium_layer <- annotation_map(cbsa_map_medium_df, 
+                                    fill="#CFDBEB",
+                                    color = "NA",
+                                    size = 0.10,
+                                    alpha = 0.9)
+
+# 40 ecommerce employees fill
+ecom40_point_layer <- geom_point(data=emp40_df, 
+                                 aes(x=long, y=lat),
+                                 position=position_jitter(width=0.6,height=0.6),
+                                 shape = 21,
+                                 fill = "#FCBD62",
+                                 color = "white",
+                                 size = 2,
+                                 stroke = 0.5,
+                                 alpha = 1)
+
+ # City points for highlighted MSA
+city_points_layer <- geom_point(data=cities_df,
+                                aes(x=lon, y=lat),
+                                shape = 21,
+                                fill = "black",
+                                color = "white",
+                                size = 2,
+                                stroke = 1)
+
+# City names for highlighted MSA
+city_text_layer <- geom_text(data=cities_df,
+                             aes(x=lon, y=lat, label=name,
+                                 family="Helvetica-Narrow", fontface="plain"),
+                             nudge_x = cities_df$nx,
+                             nudge_y = cities_df$ny,
+                             size = 3)
+
+# Plot the layers, reduce clutter w/ theme, and use an Albers equal area
+# projection
+state_layer + cbsa_large_layer + cbsa_medium_layer + ecom40_point_layer +
+              city_points_layer + city_text_layer +
+              theme_minimal +
+              coord_map("albers", lat0=30, lat1=40) 
 
 
