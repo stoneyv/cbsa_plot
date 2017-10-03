@@ -191,14 +191,14 @@ ggplot(state_map_df) +
                       stroke = 0.5,
                       alpha = 1) +
            geom_point(data=cities_df,  # City points for highlighted MSA
-                      aes(x=long, y=lat),
+                      aes(x=lon, y=lat),
                       shape = 21,
                       fill = "black",
                       color = "white",
                       size = 2,
                       stroke = 1) +
            geom_text(data=cities_df,  # City names for highlighted MSA
-                     aes(x=long, y=lat, label=city_name,
+                     aes(x=lon, y=lat, label=name,
                          family="Helvetica-Narrow", fontface="plain"),
                      nudge_x = cities_df$nx,
                      nudge_y = cities_df$ny,
