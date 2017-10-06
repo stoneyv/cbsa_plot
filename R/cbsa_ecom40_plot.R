@@ -14,12 +14,15 @@ working_dir <- "/home/stoney/Desktop/cbsa_plot/R/"
 setwd(working_dir)
 getwd()
 
+# I used data.table so that I can select a subset of columns
+# You can use the tidyverse readr::read_csv function and then
+# select a subset using dplyr::select function
 cbp_co_2015_df <- fread('../data/census/CBP/cbp15co.txt',
                           select=c("FIPSTATE","FIPSCTY","NAICS",
                                    "EMPFLAG", "EMP_NF","EMP"))
 
 cbp_co_2015_ecom_df <- cbp_co_2015_df %>%
-                         filter(NAICS == "454111" & EMP > 39) %>%
+                         filter(NAICS == "454111" & EMP >= 40) %>%
                          mutate(id = paste(FIPSTATE,FIPSCTY, sep=''))
 
 # Population estimates for each core base statistical area
@@ -37,7 +40,7 @@ pop_est_2015_df <- fread(pop_est_2010to16_file,
 
 cities_df <- fread('../data/cities.csv')
 
-## Load a spatial dataframe of US counties from a US census 500k shapefile
+## Load a spatial dataframe of US counties from a US census 20M shapefile
 ## Convert it to a regular dataframe and use the GEOID
 ## Do this outside of the loop one time.
 county_map_sdf <- readOGR(dsn = "../data/shapefiles/cb_2015_us_county_20m",
@@ -75,7 +78,7 @@ state_map_sdf <- state_map_sdf[!state_map_sdf$STATEFP %in%
                                                "79"),]
 
 
-# Convert geospatial object to dataframe
+# Convert geospatial s4 object to a s3 dataframe
 state_map_df <- fortify(state_map_sdf, region="GEOID")
 county_map_df <- fortify(county_map_sdf, region="GEOID")
 cbsa_map_df <- fortify(cbsa_map_sdf, region="GEOID")
@@ -159,11 +162,13 @@ cbsa_map_pop_df <- left_join(cbsa_map_df,
                              pop_est_2015_df,
                              by=c("id"="CBSA"))
 
+# Keep polygons with population >= 1M
 cbsa_map_large_df <- cbsa_map_pop_df %>%
-                     filter(POPESTIMATE2015 > 999999)
+                     filter(POPESTIMATE2015 >= 1000000)
 
+# Keep polygons that are between 250k and 1M
 cbsa_map_medium_df <- cbsa_map_pop_df %>%
-                      filter(POPESTIMATE2015 > 250000 & POPESTIMATE2015 < 1000000)
+                      filter(POPESTIMATE2015 >= 250000 & POPESTIMATE2015 < 1000000)
 
 cities_df <- fread('../data/cities.csv')
 
@@ -174,18 +179,20 @@ state_layer <- ggplot(state_map_df) +
                               size = 0.20,
                               fill="#EBEBEB") 
 
-# MSA w/ Population >= 1M 
-cbsa_large_layer <- annotation_map(cbsa_map_large_df, 
-                                   fill="#9AB7D6",
-                                   color = "NA",
-                                   alpha = 0.9)
-
+color_light_blue <- "#CFDBEB"
 # MSA w/ Population 250k to 1M
 cbsa_medium_layer <- annotation_map(cbsa_map_medium_df, 
-                                    fill="#CFDBEB",
+                                    fill=color_light_blue,
                                     color = "NA",
                                     size = 0.10,
                                     alpha = 0.9)
+
+color_dark_blue <- "#9AB7D6"
+# MSA w/ Population >= 1M 
+cbsa_large_layer <- annotation_map(cbsa_map_large_df, 
+                                   fill=color_dark_blue,
+                                   color = "NA",
+                                   alpha = 0.9)
 
 # 40 ecommerce employees fill
 ecom40_point_layer <- geom_point(data=emp40_df, 
@@ -208,9 +215,11 @@ city_points_layer <- geom_point(data=cities_df,
                                 stroke = 1)
 
 # City names for highlighted MSA
+# Fonts are OS dependent. This font works on Ubuntu, but not OSX
+#   aes(x=lon, y=lat, label=name,
+#   family=font_family, fontface=font_face),
 city_text_layer <- geom_text(data=cities_df,
-                             aes(x=lon, y=lat, label=name,
-                                 family="Helvetica-Narrow", fontface="plain"),
+                             aes(x=lon, y=lat, label=name),
                              nudge_x = cities_df$nx,
                              nudge_y = cities_df$ny,
                              size = 3)
