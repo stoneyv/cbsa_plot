@@ -23,7 +23,7 @@ https://www.census.gov/geo/maps-data/data/tiger-cart-boundary.html
 2. cb_2015_us_state_20m  
 3. cb_2015_us_cbsa_20m  
 
-<img src="images/ecommerce_2015_by_county_legend_ggplot_1900x953.png"/>
+<img src="images/ecommerce_2015_by_county_legend_ggplot_1900x1004.png"/>
 
 ### R implementation
 You need R and rstudio.  
