@@ -179,27 +179,28 @@ state_layer <- ggplot(state_map_df) +
                               size = 0.20,
                               fill="#EBEBEB") 
 
-color_light_blue <- "#CFDBEB"
 # MSA w/ Population 250k to 1M
+color_light_blue <- "#CFDBEB"
 cbsa_medium_layer <- annotation_map(cbsa_map_medium_df, 
                                     fill=color_light_blue,
                                     color = "NA",
                                     size = 0.10,
                                     alpha = 0.9)
 
-color_dark_blue <- "#9AB7D6"
 # MSA w/ Population >= 1M 
+color_dark_blue <- "#9AB7D6"
 cbsa_large_layer <- annotation_map(cbsa_map_large_df, 
                                    fill=color_dark_blue,
                                    color = "NA",
                                    alpha = 0.9)
 
 # 40 ecommerce employees fill
+color_orange_yellow <- "#FCBD62"
 ecom40_point_layer <- geom_point(data=emp40_df, 
                                  aes(x=long, y=lat),
                                  position=position_jitter(width=0.2,height=0.2),
                                  shape = 21,
-                                 fill = "#FCBD62",
+                                 fill = color_orange_yellow,
                                  color = "white",
                                  size = 2,
                                  stroke = 0.5,
@@ -226,9 +227,91 @@ city_text_layer <- geom_text(data=cities_df,
 
 # Plot the layers, reduce clutter w/ theme, and use an Albers equal area
 # projection
-state_layer + cbsa_large_layer + cbsa_medium_layer + ecom40_point_layer +
-              city_points_layer + city_text_layer +
-              theme_minimal +
-              coord_map("albers", lat0=30, lat1=40) 
+ecom40_map <-   state_layer +
+                cbsa_large_layer + cbsa_medium_layer +
+	        ecom40_point_layer +
+                city_points_layer + city_text_layer +
+                theme_minimal +
+                coord_map("albers", lat0=30, lat1=40) 
 
+
+require(grid)
+vplayout <- function(x,y) viewport(layout.pos.col = x, layout.pos.row = y)
+grid.newpage()
+pushViewport(viewport(layout = grid.layout(1,1)))
+
+print(ecom40_map, vp=vplayout(1,1))
+
+# Create the legend above the map 
+
+# units default to npc (near parent coordinates)
+# 0,0 is lower left and 1,1 is upper right
+
+# Positions for the items in the legend using a npc scale
+left_x <- 0.40
+middle_x<- 0.52
+right_x <- 0.69
+first_y <- 0.97
+second_y <-0.92
+third_y <- 0.87
+legend_font_size <- 10
+
+# Legend at top of plot
+# 1st line
+for ( c in 1:18) {
+  grid.circle(x=unit(runif(1,min=0.38,max=0.42), "npc"),
+	      y=unit(runif(1,min=0.96,max=0.98), "npc"),
+              r=0.005,
+	      gp=gpar(fill=color_orange_yellow,
+              col="white"))
+}
+grid.text("E-commerce employment",
+	  x=unit(middle_x, "npc"), y=unit(first_y,"npc"),
+	  gp=gpar(fontsize=legend_font_size,
+		  fontface="bold",
+		  col="black"))
+grid.text("(1 circle equals 40 jobs)",
+	  x=unit(right_x,"npc"), y=unit(first_y,"npc"),
+	  gp=gpar(fontsize=legend_font_size,
+		  col="black"))
+
+
+
+# 2nd line
+grid.rect(x=unit(0.4,"npc"), y=unit(second_y,"npc"),
+	  width=0.035, height=0.020,
+	  gp=gpar(fill=color_dark_blue,
+		  col="white"))
+grid.text("Largest metropolitan areas",
+	  x=unit(middle_x,"npc"), y=unit(second_y,"npc"),
+	  gp=gpar(fontsize=legend_font_size,
+		  fontface="bold",
+		  col="black"))
+grid.text("(population 1 million or more)",
+	  x=unit(right_x,"npc"), y=unit(second_y,"npc"),
+	  gp=gpar(fontsize=legend_font_size,
+		  col="black"))
+
+
+# 3rd line
+grid.rect(x=unit(0.4,"npc"), y=unit(third_y,"npc"), 
+	  width=0.035, height=0.020,
+	  gp=gpar(fill=color_light_blue,
+		  col="grey90"))
+grid.text("Medium-sized metropolitan areas",
+	  x=unit(middle_x,"npc"), y=unit(third_y,"npc"),
+	  gp=gpar(fontsize=legend_font_size,
+		  fontface="bold",
+		  col="black"))
+grid.text("(population of 250,000 to 1  million)",
+	  x=unit(right_x,"npc"), y=unit(third_y,"npc"),
+	  gp=gpar(fontsize=legend_font_size,
+		  col="black"))
+
+# Cite data source below the map
+grid.text("Source: Census Bureau",
+	  x=0.2, y=0.10,
+	  gp=gpar(fontsize=9, 
+		  col="grey30",
+		  alpha=0.6))
 
