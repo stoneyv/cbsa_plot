@@ -19,13 +19,24 @@ if [ ! -e ./data/shapefiles ]; then
   mkdir -p ./data/shapefiles
 fi
 
+# Enter the ./data/shapefiles directory
+pushd ./data/shapefiles
+
 for shapefile in "${tiger_urls[@]}"; do
-  wget -P ./data/shapefiles/ ${base_url_census_tiger}/$shapefile
+  wget ${base_url_census_tiger}/$shapefile
 done
 
-pushd ./data/shapefiles
-## TODO 
-ls -1 *.zip
+# Unzip all of the shapefiles into their own directory
+# and remove the zip file.
+zipfile_arr=(*.zip)
+for file in "${zipfile_arr[@]}"; do
+  base=${file%%.*}
+  mkdir $base
+  unzip -d $base $file
+  rm $file
+done
+
+# Return to the main directory
 popd
 
 # Download Census Bureau survey data  fo
