@@ -37,7 +37,7 @@ https://www.census.gov/geo/maps-data/data/tiger-cart-boundary.html
 
 ### R implementation
 
-You need R and rstudio. 
+You need R and rstudio.   
 https://www.rstudio.com/products/rstudio/download/
 
 The following CRAN packages are necessary
