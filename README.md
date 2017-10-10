@@ -2,7 +2,9 @@
 ### Recreation of the NY Times ecommerce employment geo visualization
 https://www.nytimes.com/interactive/2017/07/06/business/ecommerce-retail-jobs.html
 
-Currently there are R ggplot2 and Python matplotlib implementations.  I hope to finish a d3.js v4 implementation soon.
+* Currently there are R ggplot2 and python 3.6 matplotlib implementations.  
+* I hope to finish a d3.js v4 implementation soon.  
+* There are also some additional examples for using the npm mapshaper utility and QGIS.  
 
 ### 1. Clone the git repository
 ```
