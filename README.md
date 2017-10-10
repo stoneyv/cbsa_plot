@@ -2,12 +2,20 @@
 ### Recreation of the NY Times ecommerce employment geo visualization
 https://www.nytimes.com/interactive/2017/07/06/business/ecommerce-retail-jobs.html
 
+Currently there are R ggplot2 and Python matplotlib implementations.  I hope to finish a d3.js v4 implementation soon.
+
 ### 1. Clone the git repository
 ```
 git clone https://github.com/stoneyv/cbsa_plot.git
 ```
 
-### 2. Download the data and shapefiles  
+### 2. Download the data and shapefiles
+If you are running linux or Mac OSX you can open a terminal and run this bash shell script to download the data and unzip it into the required directories.  Windows users might use the newer Ubuntu linux subsytem on Windows 10 or cygwin.
+```bash
+./download-data-cbsa.sh
+```
+Otherwise you can do this manually following these directions
+
 A. Download the following Census Bureau .txt file into ./data/census/CBP/  
 https://www.census.gov/programs-surveys/cbp/data/datasets.html  
 cbp15co.txt  
@@ -50,7 +58,7 @@ install.packages(c("sp","stringr","data.table","dplyr","ggplot2","rgeos","rgdal"
 Install the Anaconda python 3.6 distribution  
 https://www.anaconda.com/download
 
-Create a conda environment for geopandas
+Create a conda environment for geopandas  
 https://conda.io/docs/user-guide/tasks/manage-environments.html
 ```bash
 # On the windows platform, omit the word "source"
@@ -64,7 +72,7 @@ http://ipython.readthedocs.io/en/stable/install/kernel_install.html#kernels-for-
 ```bash
 python -m ipykernel install --user --name geopandas --display-name "Python (geopandas)"
 ```
-Install any missing packages
+Install any missing packages  
 https://conda.io/docs/user-guide/tasks/manage-pkgs.html#installing-packages
 ```bash
 conda install <package_name>
