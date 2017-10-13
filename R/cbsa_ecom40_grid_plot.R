@@ -22,7 +22,7 @@ cbp_co_2015_df <- fread('../data/census/CBP/cbp15co.txt',
                                    "EMPFLAG", "EMP_NF","EMP"))
 
 cbp_co_2015_ecom_df <- cbp_co_2015_df %>%
-                         filter(NAICS == "454111" & EMP >= 40) %>%
+                         filter(NAICS == "454111", EMP >= 40) %>%
                          mutate(id = paste(FIPSTATE,FIPSCTY, sep=''))
 
 # Population estimates for each core base statistical area
@@ -140,7 +140,7 @@ for ( i in 1:nrow(df)) {
 }
 
 
-# Minimal theme settings for ggplot2 
+# Minimal theme settings for ggplot2
 # http://docs.ggplot2.org/current/theme.html
 #
 theme_minimal <- theme(axis.line=element_blank(),
@@ -163,12 +163,13 @@ cbsa_map_pop_df <- left_join(cbsa_map_df,
                              by=c("id"="CBSA"))
 
 # Keep polygons with population >= 1M
-cbsa_map_large_df <- cbsa_map_pop_df %>%
-                     filter(POPESTIMATE2015 >= 1000000)
+cbsa_map_large_df <- filter(cbsa_map_pop_df,
+                            POPESTIMATE2015 >= 1000000)
 
 # Keep polygons that are between 250k and 1M
-cbsa_map_medium_df <- cbsa_map_pop_df %>%
-                      filter(POPESTIMATE2015 >= 250000 & POPESTIMATE2015 < 1000000)
+cbsa_map_medium_df <- filter(cbsa_map_pop_df,
+                             POPESTIMATE2015 >= 250000,
+                             POPESTIMATE2015 < 1000000)
 
 cities_df <- fread('../data/cities.csv')
 
@@ -177,26 +178,26 @@ state_layer <- ggplot(state_map_df) +
                  geom_polygon(aes(x=long, y=lat, group=group), # State map
                               color="white",
                               size = 0.20,
-                              fill="#EBEBEB") 
+                              fill="#EBEBEB")
 
 # MSA w/ Population 250k to 1M
 color_light_blue <- "#CFDBEB"
-cbsa_medium_layer <- annotation_map(cbsa_map_medium_df, 
+cbsa_medium_layer <- annotation_map(cbsa_map_medium_df,
                                     fill=color_light_blue,
                                     color = "NA",
                                     size = 0.10,
                                     alpha = 0.9)
 
-# MSA w/ Population >= 1M 
+# MSA w/ Population >= 1M
 color_dark_blue <- "#9AB7D6"
-cbsa_large_layer <- annotation_map(cbsa_map_large_df, 
+cbsa_large_layer <- annotation_map(cbsa_map_large_df,
                                    fill=color_dark_blue,
                                    color = "NA",
                                    alpha = 0.9)
 
 # 40 ecommerce employees fill
 color_orange_yellow <- "#FCBD62"
-ecom40_point_layer <- geom_point(data=emp40_df, 
+ecom40_point_layer <- geom_point(data=emp40_df,
                                  aes(x=long, y=lat),
                                  position=position_jitter(width=0.2,height=0.2),
                                  shape = 21,
@@ -232,7 +233,7 @@ ecom40_map <-   state_layer +
 	        ecom40_point_layer +
                 city_points_layer + city_text_layer +
                 theme_minimal +
-                coord_map("albers", lat0=30, lat1=40) 
+                coord_map("albers", lat0=30, lat1=40)
 
 
 require(grid)
@@ -242,7 +243,7 @@ pushViewport(viewport(layout = grid.layout(1,1)))
 
 print(ecom40_map, vp=vplayout(1,1))
 
-# Create the legend above the map 
+# Create the legend above the map
 
 # units default to npc (near parent coordinates)
 # 0,0 is lower left and 1,1 is upper right
@@ -294,7 +295,7 @@ grid.text("(population 1 million or more)",
 
 
 # 3rd line
-grid.rect(x=unit(0.4,"npc"), y=unit(third_y,"npc"), 
+grid.rect(x=unit(0.4,"npc"), y=unit(third_y,"npc"),
 	  width=0.035, height=0.020,
 	  gp=gpar(fill=color_light_blue,
 		  col="grey90"))
@@ -311,7 +312,6 @@ grid.text("(population of 250,000 to 1  million)",
 # Cite data source below the map
 grid.text("Source: Census Bureau",
 	  x=0.2, y=0.10,
-	  gp=gpar(fontsize=9, 
+	  gp=gpar(fontsize=9,
 		  col="grey30",
 		  alpha=0.6))
-
