@@ -14,6 +14,8 @@ git clone https://github.com/stoneyv/cbsa_plot.git
 ### 2. Download the data and shapefiles
 If you are running linux or Mac OSX you can open a terminal and run this bash shell script to download the data and unzip it into the required directories.  Windows users might use the newer Ubuntu linux subsytem on Windows 10 or cygwin.
 ```bash
+cd cbsa_plot
+chmod +x download-data-cbsa.sh
 ./download-data-cbsa.sh
 ```
 Otherwise you can do this manually following these directions
