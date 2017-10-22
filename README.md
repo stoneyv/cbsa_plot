@@ -18,22 +18,6 @@ cd cbsa_plot
 chmod +x download-data-cbsa.sh
 ./download-data-cbsa.sh
 ```
-Otherwise you can do this manually following these directions
-
-A. Download the following Census Bureau .txt file into ./data/census/CBP/  
-https://www.census.gov/programs-surveys/cbp/data/datasets.html  
-cbp15co.txt  
-  
-B. Download the following Census Bureau population file for CBSA into ./data/census/  
-https://www2.census.gov/programs-surveys/popest/datasets/2010-2016/  
-https://www2.census.gov/programs-surveys/popest/datasets/2010-2016/metro/totals/  
-cbsa-est2016.csv
-  
-C. Download the following cartographic boundary shapefiles from the Census Bureau into ./data/shapefiles  
-https://www.census.gov/geo/maps-data/data/tiger-cart-boundary.html  
-1. cb_2015_us_county_20m  
-2. cb_2015_us_state_20m  
-3. cb_2015_us_cbsa_20m  
 
 <img src="images/ecommerce_2015_by_county_legend_ggplot_1900x1004.png"/>
 
