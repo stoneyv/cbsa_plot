@@ -6,6 +6,8 @@ https://www.nytimes.com/interactive/2017/07/06/business/ecommerce-retail-jobs.ht
 * I hope to finish a d3.js v4 implementation soon.  
 * There are also some additional examples for using the npm mapshaper utility and QGIS.  
 
+<img src="images/ecommerce_2015_by_county_legend_ggplot_1900x1004.png"/>
+
 ### 1. Clone the git repository
 ```
 git clone https://github.com/stoneyv/cbsa_plot.git
@@ -18,10 +20,9 @@ cd cbsa_plot
 chmod +x download-data-cbsa.sh
 ./download-data-cbsa.sh
 ```
+### 3. Run the Python matplotlib or the R ggplot2 implementation.  
 
-<img src="images/ecommerce_2015_by_county_legend_ggplot_1900x1004.png"/>
-
-### R implementation
+#### R implementation
 
 You need R and rstudio.   
 https://www.rstudio.com/products/rstudio/download/
@@ -41,7 +42,7 @@ To update multiple packages at once
 install.packages(c("sp","stringr","data.table","dplyr","ggplot2","rgeos","rgdal","RColorBrewer"))
 ```
 
-### Jupyter ipython implementation
+#### Jupyter ipython implementation
 
 Install the Anaconda python 3.6 distribution  
 https://www.anaconda.com/download
