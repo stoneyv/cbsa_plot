@@ -46,7 +46,7 @@ chmod +x download-data-cbsa.sh
 >```
 
 
-#### Jupyter ipython implementation
+#### Python matplotlib implementation
 >
 >Install the Anaconda python 3.6 distribution  
 >https://www.anaconda.com/download
